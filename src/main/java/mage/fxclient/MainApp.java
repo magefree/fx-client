@@ -10,7 +10,13 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/Scene.fxml"));
+        ControllerFactory controllerFactory = new ControllerFactory();
+        controllerFactory.addDependency(String.class, "Hello dependency injection.");
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Scene.fxml"));
+        loader.setControllerFactory(controllerFactory);
+
+        Parent root = loader.load();
 
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/styles/Styles.css");

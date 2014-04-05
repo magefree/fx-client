@@ -6,15 +6,19 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javax.inject.Inject;
 
 public class FXMLController implements Initializable {
+
+    @Inject
+    String message;
 
     @FXML
     private Label label;
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
-        label.setText("Hello World!");
+        label.setText(message);
     }
 
     @Override
