@@ -37,9 +37,10 @@ public class InjectionProvider {
         for (final Field field : fields) {
             if (field.isAnnotationPresent(Inject.class)) {
                 Class<?> type = field.getType();
-                Object target = dependencies.get(type);
-
-                injectIntoField(field, instance, target);
+                Object value = dependencies.get(type);
+                if (value != null) {
+                    injectIntoField(field, instance, value);
+                }
             }
         }
 
