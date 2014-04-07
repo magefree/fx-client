@@ -5,16 +5,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import mage.fxclient.injection.InjectionProvider;
 
 public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        ControllerFactory controllerFactory = new ControllerFactory();
-        controllerFactory.addDependency(String.class, "Hello dependency injection.");
+        final InjectionProvider injectionProvider = new InjectionProvider();
+        injectionProvider.addDependency(String.class, "Hello dependency injection.");
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Scene.fxml"));
-        loader.setControllerFactory(controllerFactory);
+        loader.setControllerFactory((Class<?> clazz) -> {
+            return injectionProvider.createInstance(clazz);
+        });
 
         Parent root = loader.load();
 

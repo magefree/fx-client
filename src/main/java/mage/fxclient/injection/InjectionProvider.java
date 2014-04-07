@@ -1,18 +1,17 @@
-package mage.fxclient;
+package mage.fxclient.injection;
 
 import java.lang.reflect.Field;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
-import javafx.util.Callback;
 import javax.inject.Inject;
 
 /**
  *
  * @author North
  */
-public class ControllerFactory implements Callback<Class<?>, Object> {
+public class InjectionProvider {
 
     private final Map<Class, Object> dependencies = new HashMap<>();
 
@@ -20,22 +19,17 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
         dependencies.put(clazz, object);
     }
 
-    @Override
-    public Object call(Class<?> clazz) {
+    public Object createInstance(Class<?> clazz) {
         try {
             Object instance = clazz.newInstance();
 
-            injectMembers(instance);
+            injectMembers(clazz, instance);
 
             return instance;
         } catch (InstantiationException | IllegalAccessException ex) {
             throw new IllegalStateException("Cannot instantiate controller: " + clazz, ex);
         }
-    }
 
-    private void injectMembers(Object instance) {
-        Class<? extends Object> clazz = instance.getClass();
-        injectMembers(clazz, instance);
     }
 
     private void injectMembers(Class<? extends Object> clazz, final Object instance) throws SecurityException {
@@ -48,6 +42,7 @@ public class ControllerFactory implements Callback<Class<?>, Object> {
                 injectIntoField(field, instance, target);
             }
         }
+
         Class<? extends Object> superclass = clazz.getSuperclass();
         if (superclass != null) {
             injectMembers(superclass, instance);
