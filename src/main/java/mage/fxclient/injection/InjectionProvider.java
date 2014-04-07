@@ -1,10 +1,14 @@
 package mage.fxclient.injection;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 /**
@@ -24,6 +28,7 @@ public class InjectionProvider {
             Object instance = clazz.newInstance();
 
             injectMembers(clazz, instance);
+            invokeMethodWithAnnotation(clazz, instance, PostConstruct.class);
 
             return instance;
         } catch (InstantiationException | IllegalAccessException ex) {
@@ -63,5 +68,29 @@ public class InjectionProvider {
                 field.setAccessible(wasAccessible);
             }
         });
+    }
+
+    private void invokeMethodWithAnnotation(Class clazz, final Object instance, final Class<? extends Annotation> annotationClass) throws IllegalStateException, SecurityException {
+        Method[] declaredMethods = clazz.getDeclaredMethods();
+        for (final Method method : declaredMethods) {
+            if (method.isAnnotationPresent(annotationClass) && method.getParameterCount() == 0) {
+                AccessController.doPrivileged((PrivilegedAction) () -> {
+                    boolean wasAccessible = method.isAccessible();
+                    try {
+                        method.setAccessible(true);
+                        return method.invoke(instance, new Object[]{});
+                    } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                        throw new IllegalStateException("Problem invoking " + annotationClass + " : " + method, ex);
+                    } finally {
+                        method.setAccessible(wasAccessible);
+                    }
+                });
+            }
+        }
+
+        Class superclass = clazz.getSuperclass();
+        if (superclass != null) {
+            invokeMethodWithAnnotation(superclass, instance, annotationClass);
+        }
     }
 }

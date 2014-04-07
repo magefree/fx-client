@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 public class FXMLController implements Initializable {
@@ -19,6 +20,11 @@ public class FXMLController implements Initializable {
     @FXML
     private void handleButtonAction(ActionEvent event) {
         label.setText(message);
+    }
+
+    @PostConstruct
+    private void init() {
+        System.out.println("message value post contruct: " + message);
     }
 
     @Override
