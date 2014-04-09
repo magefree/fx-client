@@ -1,41 +1,62 @@
 package mage.fxclient;
 
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import mage.fxclient.injection.InjectionProvider;
+import mage.fxclient.server.MageObservableServer;
+import mage.fxclient.server.ObservableServer;
+import mage.remote.Connection;
+import mage.remote.Session;
+import mage.remote.SessionImpl;
 
 public class MainApp extends Application {
 
+    private final InjectionProvider injectionProvider;
+
+    public MainApp() {
+        MageObservableServer observableServer = new MageObservableServer();
+        Session session = new SessionImpl(observableServer);
+
+        injectionProvider = new InjectionProvider();
+        injectionProvider.addDependency(Session.class, session);
+        injectionProvider.addDependency(ObservableServer.class, observableServer);
+
+        session.connect(createConnectionObject());
+    }
+
+    private static Connection createConnectionObject() {
+        Connection connection = new Connection();
+        connection.setHost("localhost");
+        connection.setPort(17171);
+        connection.setUsername("TestUser");
+        connection.setAvatarId(51);
+        connection.setProxyType(Connection.ProxyType.NONE);
+        connection.setShowAbilityPickerForced(true);
+        return connection;
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
-        final InjectionProvider injectionProvider = new InjectionProvider();
-        injectionProvider.addDependency(String.class, "Hello dependency injection.");
+        String fxmlPath = "/fxml/ChatPanel.fxml";
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Scene.fxml"));
+        stage.setTitle("JavaFX and Maven");
+        stage.setScene(new Scene(loadFxml(fxmlPath)));
+        stage.show();
+    }
+
+    private Parent loadFxml(String path) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(path));
         loader.setControllerFactory((Class<?> clazz) -> {
             return injectionProvider.createInstance(clazz);
         });
 
-        Parent root = loader.load();
-
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("/styles/Styles.css");
-
-        stage.setTitle("JavaFX and Maven");
-        stage.setScene(scene);
-        stage.show();
+        return loader.load();
     }
 
-    /**
-     * The main() method is ignored in correctly deployed JavaFX application. main() serves only as fallback in case the
-     * application can not be launched through deployment artifacts, e.g., in IDEs with limited FX support. NetBeans
-     * ignores main().
-     *
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
         Application.launch(args);
     }
