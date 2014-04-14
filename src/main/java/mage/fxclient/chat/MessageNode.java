@@ -1,9 +1,9 @@
 package mage.fxclient.chat;
 
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import mage.view.ChatMessage;
 
 /**
@@ -24,8 +24,8 @@ public class MessageNode extends VBox {
         nameAndTime.setSpacing(10d);
 
         if (chatMessage.getTime() != null) {
-            Label timeLabel = new Label();
-            timeLabel.setTextFill(TIMESTAMP_COLOR);
+            Text timeLabel = new Text();
+            timeLabel.setFill(TIMESTAMP_COLOR);
             timeLabel.setText(chatMessage.getTime());
 
             nameAndTime.getChildren().add(timeLabel);
@@ -57,16 +57,15 @@ public class MessageNode extends VBox {
                 break;
         }
         if (messageUserName != null && !messageUserName.isEmpty()) {
-            Label nameLabel = new Label();
+            Text nameLabel = new Text();
             nameLabel.setText(messageUserName);
-            nameLabel.setTextFill(userColor);
+            nameLabel.setFill(userColor);
             nameAndTime.getChildren().add(nameLabel);
         }
 
-        Label message = new Label();
+        Text message = new Text();
         message.setText(chatMessage.getMessage());
-        message.setTextFill(textColor);
-        message.setWrapText(true);
+        message.setFill(textColor);
 
         this.getChildren().addAll(nameAndTime, message);
         this.setStyle("-fx-background-color: #555;");
