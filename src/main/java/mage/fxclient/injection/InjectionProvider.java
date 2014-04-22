@@ -56,7 +56,7 @@ public class InjectionProvider {
     }
 
     private void injectIntoField(final Field field, final Object instance, final Object target) {
-        AccessController.doPrivileged((PrivilegedAction) () -> {
+        AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
             boolean wasAccessible = field.isAccessible();
             try {
                 field.setAccessible(true);
@@ -74,7 +74,7 @@ public class InjectionProvider {
         Method[] declaredMethods = clazz.getDeclaredMethods();
         for (final Method method : declaredMethods) {
             if (method.isAnnotationPresent(annotationClass) && method.getParameterCount() == 0) {
-                AccessController.doPrivileged((PrivilegedAction) () -> {
+                AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
                     boolean wasAccessible = method.isAccessible();
                     try {
                         method.setAccessible(true);
