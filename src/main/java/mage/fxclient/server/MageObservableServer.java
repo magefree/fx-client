@@ -1,9 +1,10 @@
 package mage.fxclient.server;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.WeakHashMap;
 import mage.interfaces.MageClient;
 import mage.interfaces.callback.ClientCallback;
 import mage.utils.MageVersion;
@@ -16,12 +17,12 @@ public class MageObservableServer implements MageClient, ObservableServer {
 
     private final MageVersion version = new MageVersion(1, 3, 0, "");
 
-    private final Map<ServerEvent, List<ServerEventHandler>> handlers = new HashMap<>();
+    private final Map<ServerEvent, Set<ServerEventHandler>> handlers = new HashMap<>();
 
-    private final List<SessionEventHandler> connectHandlers = new LinkedList<>();
-    private final List<SessionEventHandler> disconnectHandlers = new LinkedList<>();
-    private final List<SessionEventHandler> showMessageHandlers = new LinkedList<>();
-    private final List<SessionEventHandler> showErrorHandlers = new LinkedList<>();
+    private final Set<SessionEventHandler> connectHandlers = Collections.newSetFromMap(new WeakHashMap<>());
+    private final Set<SessionEventHandler> disconnectHandlers = Collections.newSetFromMap(new WeakHashMap<>());
+    private final Set<SessionEventHandler> showMessageHandlers = Collections.newSetFromMap(new WeakHashMap<>());
+    private final Set<SessionEventHandler> showErrorHandlers = Collections.newSetFromMap(new WeakHashMap<>());
 
     @Override
     public MageVersion getVersion() {
@@ -59,7 +60,7 @@ public class MageObservableServer implements MageClient, ObservableServer {
     @Override
     public void processCallback(ClientCallback cc) {
         ServerEvent event = ServerEvent.fromMethod(cc.getMethod());
-        List<ServerEventHandler> eventHandlers = handlers.get(event);
+        Set<ServerEventHandler> eventHandlers = handlers.get(event);
         if (eventHandlers != null) {
             for (ServerEventHandler handler : eventHandlers) {
                 handler.handle(cc.getObjectId(), cc.getData());
@@ -69,9 +70,9 @@ public class MageObservableServer implements MageClient, ObservableServer {
 
     @Override
     public void on(ServerEvent event, ServerEventHandler handler) {
-        List<ServerEventHandler> eventHandlers = handlers.get(event);
+        Set<ServerEventHandler> eventHandlers = handlers.get(event);
         if (eventHandlers == null) {
-            eventHandlers = new LinkedList<>();
+            eventHandlers = Collections.newSetFromMap(new WeakHashMap<>());
         }
 
         eventHandlers.add(handler);
