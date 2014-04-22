@@ -13,6 +13,7 @@ import mage.utils.MageVersion;
  *
  * @author North
  */
+@SuppressWarnings("rawtypes")
 public class MageObservableServer implements MageClient, ObservableServer {
 
     private final MageVersion version = new MageVersion(1, 3, 0, "");
@@ -58,6 +59,7 @@ public class MageObservableServer implements MageClient, ObservableServer {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void processCallback(ClientCallback cc) {
         ServerEvent event = ServerEvent.fromMethod(cc.getMethod());
         Set<ServerEventHandler> eventHandlers = handlers.get(event);

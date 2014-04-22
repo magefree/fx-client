@@ -6,6 +6,7 @@ package mage.fxclient.server;
  */
 public interface ObservableServer {
 
+    @SuppressWarnings("rawtypes")
     void on(ServerEvent event, ServerEventHandler handler);
 
     void onConnect(SessionEventHandler handler);
