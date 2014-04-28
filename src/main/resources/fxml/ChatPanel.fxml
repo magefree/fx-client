@@ -6,21 +6,16 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane maxHeight="-1.0" maxWidth="-1.0" minHeight="-1.0" minWidth="-1.0" prefHeight="290.0" prefWidth="-1.0" style="-fx-background-color: #111;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mage.fxclient.chat.ChatPanelController">
-  <children>
-    <HBox alignment="CENTER" spacing="5.0" AnchorPane.bottomAnchor="7.0" AnchorPane.leftAnchor="7.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="7.0">
-      <children>
-        <ListView fx:id="userList" editable="true" focusTraversable="true" orientation="VERTICAL" prefHeight="-1.0" prefWidth="150.0"/>
+    <children>
         <VBox alignment="CENTER" prefHeight="-1.0" prefWidth="-1.0" spacing="5.0" HBox.hgrow="ALWAYS">
-          <children>
-            <ListView fx:id="messageList" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS"/>
-            <TextField fx:id="messageField" maxHeight="-Infinity" minHeight="-Infinity" onAction="#onAction" prefHeight="22.0" prefWidth="201.0" styleClass="root" VBox.vgrow="NEVER">
-              <VBox.margin>
-                <Insets />
-              </VBox.margin>
-            </TextField>
-          </children>
+            <children>
+                <ListView fx:id="messageList" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS" />
+                <TextField fx:id="messageField" maxHeight="-Infinity" minHeight="-Infinity" onAction="#onAction" prefHeight="22.0" prefWidth="201.0" styleClass="root" VBox.vgrow="NEVER">
+                    <VBox.margin>
+                        <Insets />
+                    </VBox.margin>
+                </TextField>
+            </children>
         </VBox>
-      </children>
-    </HBox>
-  </children>
+    </children>
 </AnchorPane>

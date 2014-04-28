@@ -28,8 +28,6 @@ public class ChatPanelController {
     ObservableServer observableServer;
 
     @FXML
-    private ListView<MessageNode> userList;
-    @FXML
     private ListView<MessageNode> messageList;
     @FXML
     private TextField messageField;
