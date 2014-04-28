@@ -38,15 +38,11 @@ public class ChatPanelController {
 
     @PostConstruct
     private void init() {
-        String userName = session.getUserName();
-
         UUID mainRoomId = session.getMainRoomId();
         chatId = session.getRoomChatId(mainRoomId);
         session.joinChat(chatId);
 
-        observableServer.on(ServerEvent.chatMessage, (ServerEventHandler<ChatMessage>) (objectId, message) -> {
-            observableMessages.add(new MessageNode(message, userName));
-        });
+        observableServer.on(ServerEvent.chatMessage, chatMessageHandler);
     }
 
     public void initialize() {
@@ -59,4 +55,8 @@ public class ChatPanelController {
 
         session.sendChatMessage(chatId, message);
     }
+
+    private final ServerEventHandler<ChatMessage> chatMessageHandler = (objectId, message) -> {
+        observableMessages.add(new MessageNode(message, session.getUserName()));
+    };
 }
