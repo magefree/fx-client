@@ -3,11 +3,19 @@ function logPane(containerId) {
 
     var createMessagePartNode = function(messagePart) {
         var messageNode = document.createElement("span");
-        var textNode = document.createTextNode(messagePart.text);
-
         messageNode.classList.add("messagePart");
         messageNode.style.color = messagePart.color;
-        messageNode.appendChild(textNode);
+
+        var textLines = messagePart.text.split("\n");
+        for (var i = 0; i < textLines.length; i++) {
+            var textNode = document.createTextNode(textLines[i]);
+            messageNode.appendChild(textNode);
+
+            if (i < textLines.length - 1) {
+                messageNode.appendChild(document.createElement("br"));
+            }
+        }
+
 
         return messageNode;
     };
