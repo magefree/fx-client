@@ -1,4 +1,4 @@
-package mage.fxclient.chat;
+package mage.fxclient.controller;
 
 import java.util.UUID;
 import javafx.application.Platform;
@@ -14,18 +14,13 @@ import mage.fxclient.server.ServerEventHandler;
 import mage.remote.Session;
 import mage.view.ChatMessage;
 
-/**
- * FXML Controller class
- *
- * @author North
- */
 public class ChatPanelController {
 
     @Inject
-    Session session;
+    private Session session;
 
     @Inject
-    ObservableServer observableServer;
+    private ObservableServer observableServer;
 
     @FXML
     private LogPane logPane;
