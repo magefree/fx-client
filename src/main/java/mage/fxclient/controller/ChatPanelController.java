@@ -44,7 +44,8 @@ public class ChatPanelController {
         session.sendChatMessage(chatId, message);
     }
 
-    private final ServerEventHandler<ChatMessage> chatMessageHandler = (objectId, message) -> {
+    private final ServerEventHandler chatMessageHandler = (objectId, data) -> {
+        ChatMessage message = (ChatMessage) data;
         Platform.runLater(() -> {
             logPane.addEntry(createLogEntry(message));
         });
