@@ -1,68 +1,41 @@
 package mage.fxclient.logpane;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Worker.State;
-import javafx.scene.layout.Pane;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
+import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.ListView;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
-/**
- *
- * @author North
- */
-public class LogPane extends Pane {
+public class LogPane extends ListView<TextFlow> {
 
-    private static final String htmlRelativePath = "/logpane/logPane.html";
-
-    private final WebView webView;
-    private final Queue<LogEntry> queue;
-
-    private boolean loaded = false;
+    private final ObservableList<TextFlow> entries;
 
     public LogPane() {
-        queue = new LinkedList<>();
-
-        webView = new WebView();
-        this.getChildren().add(webView);
-
-        webView.setContextMenuEnabled(false);
-
-        WebEngine webEngine = webView.getEngine();
-        webEngine.getLoadWorker().stateProperty().addListener(onLoadListener);
-
-        String htmlPath = this.getClass().getResource(htmlRelativePath).toExternalForm();
-        webEngine.load(htmlPath);
+        entries = FXCollections.observableArrayList();
+        this.setItems(entries);
     }
-
-    private final ChangeListener<State> onLoadListener = new ChangeListener<State>() {
-
-        @Override
-        public void changed(ObservableValue<? extends State> observable, State oldState, State newState) {
-            if (newState == State.SUCCEEDED) {
-                loaded = true;
-                processQueue();
-            }
-        }
-    };
 
     public void addEntry(LogEntry entry) {
-        queue.add(entry);
+        TextFlow entryNode = new TextFlow();
+        entryNode.setStyle("-fx-background-color: Sienna;");
 
-        if (loaded) {
-            processQueue();
+        List<LogEntryPart> parts = entry.getParts();
+        for (int i = 0; i < parts.size(); i++) {
+            if (i > 0) {
+                entryNode.getChildren().add(new Text(" "));
+            }
+            entryNode.getChildren().add(createTextPart(parts.get(i)));
         }
+
+        entries.add(entryNode);
+        this.scrollTo(entryNode);
     }
 
-    private void processQueue() {
-        while (!queue.isEmpty()) {
-            processLogEntry(queue.remove());
-        }
-    }
+    private Text createTextPart(LogEntryPart logEntryPart) {
+        Text text = new Text(logEntryPart.getText());
+        text.setFill(logEntryPart.getColor());
 
-    private void processLogEntry(LogEntry entry) {
-        webView.getEngine().executeScript("log.appendMessage(" + entry.toJSON() + ");");
+        return text;
     }
 }
