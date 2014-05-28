@@ -1,6 +1,7 @@
 package mage.fxclient.controller;
 
 import java.io.IOException;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -49,19 +50,23 @@ public class MainController {
     };
 
     private final SessionEventHandler onServerConnect = message -> {
-        connectButton.setText("Disconnect");
-        connectButton.setOnAction(event -> {
-            session.disconnect(false);
-        });
+        Platform.runLater(() -> {
+            connectButton.setText("Disconnect");
+            connectButton.setOnAction(event -> {
+                session.disconnect(false);
+            });
 
-        lobbyButton.setDisable(false);
+            lobbyButton.setDisable(false);
+        });
     };
 
     private final SessionEventHandler onServerDisconnect = message -> {
-        connectButton.setText("Connect");
-        connectButton.setOnAction(onConnectAction);
+        Platform.runLater(() -> {
+            connectButton.setText("Connect");
+            connectButton.setOnAction(onConnectAction);
 
-        lobbyButton.setDisable(true);
+            lobbyButton.setDisable(true);
+        });
     };
 
     private void changeView(View view) {
